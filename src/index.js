@@ -1,5 +1,8 @@
+import './css/styles.css';
 import axios from "axios";
 import Notiflix from "notiflix";
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 
 const refs = {
@@ -14,7 +17,7 @@ let page =1
 refs.loadMoreBtn.style.display = 'none';
 
 refs.form.addEventListener('submit', onSearchBtnClick);
-// refs.loadMoreBtn.addEventListener('click', onBtnLoadMore);
+refs.loadMoreBtn.addEventListener('click', onBtnLoadMore);
 
 
 
@@ -53,6 +56,10 @@ async function pixabay (inputSearch) {
         response.data.hits.length, 
         response.data.total 
         );
+
+        createMarkup(response.data)
+        smoothScroll();
+
         console.log(response);
   } catch (error) {
         console.error(error);
@@ -63,33 +70,33 @@ function onBtnLoadMore() {
     const input = refs.input.value.trim();
     page += 1; 
     pixabay(input, page); 
+
+    smoothScroll();
 }
 
 function createMarkup(arr) {
-    const markup = arr.hits
-    .map(
-      item =>
-        `<a class="photo-link" href="${item.largeImageURL}">
+    const markup = arr.hits.map( ({largeImageURL, webformatURL, tags, likes, views, comments, downloads }) =>
+        `<a class="photo-link" href="${largeImageURL}">
             <div class="photo-card">
             <div class="photo">
-            <img src="${item.webformatURL}" alt="${item.tags}" loading="lazy"/>
+            <img src="${webformatURL}" alt="${tags}" loading="lazy"/>
             </div>
                     <div class="info">
                         <p class="info-item">
                             <b>Likes</b>
-                            ${item.likes}
+                            ${likes}
                         </p>
                         <p class="info-item">
                             <b>Views</b>
-                            ${item.views}
+                            ${views}
                         </p>
                         <p class="info-item">
                             <b>Comments</b>
-                            ${item.comments}
+                            ${comments}
                         </p>
                         <p class="info-item">
                             <b>Downloads</b>
-                            ${item.downloads}
+                            ${downloads}
                         </p>
                     </div>
             </div>
@@ -106,7 +113,7 @@ const simpleLightBox = new SimpleLightbox('.gallery a', {
 });
 
 
-function notification(length, totalHits) {
+function notification(length = 20, totalHits) {
     if (length === 0) {
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
@@ -125,4 +132,15 @@ function notification(length, totalHits) {
       "We're sorry, but you've reached the end of search results."
     );
   }
+}
+
+function smoothScroll() {
+    const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
+
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});
 }
