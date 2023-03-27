@@ -23,7 +23,8 @@ refs.loadMoreBtn.addEventListener('click', onBtnLoadMore);
 
 function onSearchBtnClick(e) {
     e.preventDefault();
-    
+  
+    page = 1;
     refs.gallery.innerHTML = '';
     const inputSearch = refs.input.value.trim();
     console.log(inputSearch)
@@ -58,7 +59,6 @@ async function pixabay (inputSearch) {
         );
 
         createMarkup(response.data)
-        smoothScroll();
 
         console.log(response);
   } catch (error) {
