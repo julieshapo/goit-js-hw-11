@@ -5,6 +5,7 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 
+
 const refs = {
     form: document.querySelector('.search-form'),
     input: document.querySelector('input'),
@@ -12,7 +13,7 @@ const refs = {
     loadMoreBtn: document.querySelector('.load-more'),
 }
 
-let page =1
+let page = 1;
 
 refs.loadMoreBtn.style.display = 'none';
 
@@ -27,16 +28,18 @@ function onSearchBtnClick(e) {
     page = 1;
     refs.gallery.innerHTML = '';
     const inputSearch = refs.input.value.trim();
-    console.log(inputSearch)
+  console.log(inputSearch)
 
-    if (inputSearch !== '') {
+        if (inputSearch !== '') {
         pixabay(inputSearch);
     } else {
         refs.loadMoreBtn.style.display = 'none';
         return Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
-    }
+  }
+  
+  
 }
 
 async function pixabay (inputSearch) {
@@ -64,14 +67,14 @@ async function pixabay (inputSearch) {
   } catch (error) {
         console.error(error);
   }
+  
 }
 
 function onBtnLoadMore() {
-    const input = refs.input.value.trim();
-    page += 1; 
-    pixabay(input, page); 
-
-    smoothScroll();
+  const input = refs.input.value.trim();
+  smoothScroll();
+  page += 1; 
+  pixabay(input, page); 
 }
 
 function createMarkup(arr) {
@@ -105,6 +108,10 @@ function createMarkup(arr) {
     .join(''); 
   refs.gallery.insertAdjacentHTML('beforeend', markup); 
   simpleLightBox.refresh(); 
+  
+   if (page > 1) {
+    smoothScroll();
+  }
 }
 
 const simpleLightBox = new SimpleLightbox('.gallery a', {
@@ -144,3 +151,4 @@ window.scrollBy({
   behavior: "smooth",
 });
 }
+
